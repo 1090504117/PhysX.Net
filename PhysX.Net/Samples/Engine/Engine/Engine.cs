@@ -274,7 +274,7 @@ namespace PhysX.Samples.Engine
 			}
 		}
 
-		private void Update(TimeSpan elapsed)
+		protected virtual void Update(TimeSpan elapsed, bool isMoveCamera=true)
 		{
 			this.FrameTime = elapsed;
 
@@ -282,7 +282,10 @@ namespace PhysX.Samples.Engine
 			this.Scene.Simulate((float)elapsed.TotalSeconds);
 			this.Scene.FetchResults(block: true);
 
-			this.Camera.Update(elapsed);
+			if (isMoveCamera)
+            {
+				this.Camera.Update(elapsed);
+			}
 
 			if (OnUpdate != null)
 				OnUpdate(elapsed);

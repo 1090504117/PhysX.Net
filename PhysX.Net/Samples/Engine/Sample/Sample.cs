@@ -8,9 +8,9 @@ namespace PhysX.Samples
 	public abstract class Sample
 	{
 		// TODO: Refactor how the physics objects are created, they're too hidden away from the individual samples
-		protected Sample(Action<SceneDesc> sceneDescCallback = null)
+		protected Sample(Action<SceneDesc>? sceneDescCallback = null, PhysX.Samples.Engine.Engine? engine = null)
 		{
-			Engine = new PhysX.Samples.Engine.Engine(sceneDescCallback);
+			Engine = engine == null ? new PhysX.Samples.Engine.Engine() : engine;
 			Engine.OnUpdate += UpdateEngine;
 			Engine.OnDraw += (s, e) => DrawEngine();
 
