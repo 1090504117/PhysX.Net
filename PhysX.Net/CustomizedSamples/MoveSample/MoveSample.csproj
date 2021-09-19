@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Samples\Engine\Engine.csproj" />
+    <ProjectReference Include="..\CustomizedEngine\CustomizedEngine.csproj" />
   </ItemGroup>
 
 </Project>

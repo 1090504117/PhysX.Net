@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using PhysX.Samples.Engine;
 
-namespace PhysX.CustomizedSamples.MoveSample
+namespace PhysX.CustomizedSamples.CustomizedEngine
 {
-    class CustomizedEngine : Engine
+    public class CustomizedEngine : Engine
     {
 		protected override void Update(TimeSpan elapsed, bool isMoveCamera)
 		{

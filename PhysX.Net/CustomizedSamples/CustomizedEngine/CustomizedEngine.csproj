@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>PhysX.CustomizedSamples.CustomizedEngine</AssemblyName>
+    <RootNamespace>PhysX.CustomizedSamples.CustomizedEngine</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Samples\Engine\Engine.csproj" />
+  </ItemGroup>
+
+</Project>
