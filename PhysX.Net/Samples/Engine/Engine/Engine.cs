@@ -31,6 +31,8 @@ namespace PhysX.Samples.Engine
 		private SharpDX.Direct3D11.Buffer _userPrimitivesBuffer;
 		private InputLayout _inputLayout;
 
+		public Action<object, KeyEventArgs>? OnKeyDown;
+
 		// TODO: Clean up this class
 		public Engine(Action<SceneDesc> sceneDescCallback = null)
 		{
@@ -40,7 +42,7 @@ namespace PhysX.Samples.Engine
 			Window.Show();
 
 			_keyboard = new Keyboard(this);
-			_keyboard.OnKeyDown += _keyboard_OnKeyDown;
+			_keyboard.OnKeyDown += _onKeyDown;
 
 			InitalizeGraphics();
 
@@ -56,6 +58,18 @@ namespace PhysX.Samples.Engine
 				ShootSphere();
 			}
 		}
+
+		private void _onKeyDown(object sender, KeyEventArgs e)
+        {
+			if (OnKeyDown == null)
+            {
+				_keyboard_OnKeyDown(sender, e);
+			}
+			else
+            {
+				OnKeyDown(sender, e);
+			}
+        }
 
 		private void ShootSphere()
 		{
@@ -274,7 +288,7 @@ namespace PhysX.Samples.Engine
 			}
 		}
 
-		protected virtual void Update(TimeSpan elapsed, bool isMoveCamera=true)
+		protected virtual void Update(TimeSpan elapsed, bool isNeedMoveCamera=true)
 		{
 			this.FrameTime = elapsed;
 
@@ -282,7 +296,7 @@ namespace PhysX.Samples.Engine
 			this.Scene.Simulate((float)elapsed.TotalSeconds);
 			this.Scene.FetchResults(block: true);
 
-			if (isMoveCamera)
+			if (isNeedMoveCamera)
             {
 				this.Camera.Update(elapsed);
 			}

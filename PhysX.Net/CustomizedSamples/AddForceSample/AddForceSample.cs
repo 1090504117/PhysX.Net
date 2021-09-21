@@ -4,8 +4,6 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Input;
 using PhysX.Samples;
-using PhysX.Samples.Engine;
-
 
 namespace PhysX.CustomizedSamples.AddForceSample
 {
@@ -15,8 +13,16 @@ namespace PhysX.CustomizedSamples.AddForceSample
         //private float _rotation;
         private const float _controllerSpeed = 0.1f;
 
+        private RigidBody? _ballActor;
+
         public AddForceSample():base(null, new CustomizedEngine.CustomizedEngine())
         {
+            if (Engine != null)
+            {
+                CustomizedEngine.CustomizedEngine? engine = Engine as CustomizedEngine.CustomizedEngine;
+                //if (engine != null) engine.ResetPhysicsAction = ResetPhysics;
+            }
+
             Run();
         }
 
@@ -31,7 +37,7 @@ namespace PhysX.CustomizedSamples.AddForceSample
 
             var controllerManager = scene.CreateControllerManager();
 
-            // User controllable character
+            //User controllable character
             {
                 var desc = new CapsuleControllerDesc()
                 {
@@ -39,24 +45,113 @@ namespace PhysX.CustomizedSamples.AddForceSample
                     Radius = 1,
                     Material = material,
                     UpDirection = new Vector3(0, 1, 0),
-                    Position = new Vector3(0, 3, 0),
+                    Position = new Vector3(30, 10, 0),
                     //ReportCallback = new ControllerHitReport()
                 };
 
                 _controller = controllerManager.CreateController<CapsuleController>(desc);
+                RigidDynamic? controllerActor = _controller?.Actor;
+                controllerActor?.SetMassAndUpdateInertia(100);
+                if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.EnableCCD;
+            }
+
+            /*
+            // 添加胶囊体，但是站不起来
+            {
+                _ballActor = this.Scene.Physics.CreateRigidDynamic();
+
+                CapsuleGeometry geom = new CapsuleGeometry(radius: 2, halfHeight: 2);
+                Shape boxShape = RigidActorExt.CreateExclusiveShape(_ballActor, geom, material, null);
+
+                _ballActor.GlobalPose = Matrix4x4.CreateTranslation(new Vector3(0, 0, 10));
+                _ballActor.SetMassAndUpdateInertia(100);
+
+                this.Scene.AddActor(_ballActor);
+            }
+            */
+        }
+
+        private void ResetPhysics()
+        {
+            if (_controller != null)
+            {
+                RigidDynamic? controllerActor = _controller?.Actor;
+                if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.Kinematic;
+
+                _controller.UpDirection = new Vector3(0, 1, 0);
+                _controller.Position = new Vector3(30, 10, 0);
+
+                //if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.EnableCCD;
             }
         }
 
         protected override void Update(TimeSpan elapsed)
         {
+            if (_controller != null)
+            {
+                _controller.UpDirection = new Vector3(0, 1, 0);
 
+                _controller.Actor?.AddForceAtPosition(new Vector3(0, 981, 0), _controller.Position, ForceMode.Force, true);
+            }
         }
 
 
         protected override void ProcessKeyboard(Key[] pressedKeys)
         {
-            if (pressedKeys.Contains(Key.S))
-                _controller.Actor.AddForceAtLocalPosition(new System.Numerics.Vector3(100, 0, 0), new System.Numerics.Vector3(0, 0, 0), ForceMode.Impulse, true);
+            RigidDynamic? controllerActor = _controller?.Actor;
+            if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.EnableCCD;
+
+            if (pressedKeys.Length <= 0) return;
+
+            Vector3 forceVector;
+            float powerX = 100;
+            //float powerY = 0;
+            float powerY = 0;
+            float powerZ = 100;
+
+            Vector3 forceLocalPostion = new Vector3(0, 0, 0);
+            if (pressedKeys.Contains(Key.A))
+            {
+                forceVector = new Vector3(-powerX, powerY, 0);
+            }
+            else if (pressedKeys.Contains(Key.D))
+            {
+                forceVector = new Vector3(powerX, powerY, 0);
+            }
+            else if (pressedKeys.Contains(Key.W))
+            {
+                forceVector = new Vector3(0, powerY, powerZ);
+                forceLocalPostion = new Vector3(1, 0, 1);
+            }
+            else if (pressedKeys.Contains(Key.S))
+            {
+                forceVector = new Vector3(0, powerY, -powerZ);
+                forceLocalPostion = new Vector3(-1, 0, 1);
+            }
+            else
+            {
+                forceVector = new Vector3(0, 0, 0);
+            }
+
+            _ballActor?.AddLocalForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
+            _controller?.Actor.AddLocalForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
+
+            if (forceVector.LengthSquared() != 0f )
+            {
+
+            }
+
+            if (pressedKeys.Contains(Key.Space))
+            {
+                Vector3 jumpForceLocalPostion = new Vector3(0, 0, 0);
+                _controller?.Actor.AddLocalForceAtLocalPosition(new Vector3(0, 30, 0), jumpForceLocalPostion, ForceMode.Impulse, true);
+            }
+
+
+            if (pressedKeys.Contains(Key.R))
+            {
+                ResetPhysics();
+            }
         }
 
 

@@ -3,16 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using PhysX.Samples.Engine;
 
 namespace PhysX.CustomizedSamples.CustomizedEngine
 {
     public class CustomizedEngine : Engine
     {
-		protected override void Update(TimeSpan elapsed, bool isMoveCamera)
+		public Action? ResetPhysicsAction;
+
+		public CustomizedEngine()
+        {
+			OnKeyDown = _onKeyDown;
+		}
+
+		protected override void Update(TimeSpan elapsed, bool isNeedMoveCamera)
 		{
-			isMoveCamera = false;
-			base.Update(elapsed, isMoveCamera);
+			isNeedMoveCamera = false;
+			base.Update(elapsed, isNeedMoveCamera);
+		}
+
+		private void _onKeyDown(object sender, KeyEventArgs e)
+        {
+			if (e.Key == Key.R)
+			{
+				ResetPhysics();
+			}
+		}
+
+		public virtual void ResetPhysics()
+        {
+			ResetPhysicsAction?.Invoke();
+
 		}
 	}
 }

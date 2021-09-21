@@ -39,7 +39,7 @@ namespace PhysX.CustomizedSamples.MoveSample
                     Radius = 1,
                     Material = material,
                     UpDirection = new Vector3(0, 1, 0),
-                    Position = new Vector3(0, 3, 0),
+                    Position = new Vector3(0, 10, 0),
                     //ReportCallback = new ControllerHitReport()
                 };
 
@@ -62,14 +62,16 @@ namespace PhysX.CustomizedSamples.MoveSample
 
             Vector3 forward = new Vector3(0, 0, 1);
             Vector3 right = new Vector3(1, 0, 0);
-
+            Vector3 up = new Vector3(0, 1, 0);
 
             Vector3 moveDelta = Vector3.Zero;
 
             if (pressedKeys.Contains(Key.W))
-                moveDelta += forward;
+                //moveDelta += forward;
+                moveDelta += up;
             if (pressedKeys.Contains(Key.S))
-                moveDelta += -forward;
+                //moveDelta += -forward;
+                moveDelta += -up;
             if (pressedKeys.Contains(Key.A))
                 moveDelta += -right;
             if (pressedKeys.Contains(Key.D))
