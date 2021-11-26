@@ -15,6 +15,8 @@ namespace PhysX.CustomizedSamples.AddForceSample
 
         private RigidBody? _ballActor;
 
+        private Vector3 _originPostion = new Vector3(0, 0, 0);
+
         public AddForceSample():base(null, new CustomizedEngine.CustomizedEngine())
         {
             if (Engine != null)
@@ -45,7 +47,7 @@ namespace PhysX.CustomizedSamples.AddForceSample
                     Radius = 1,
                     Material = material,
                     UpDirection = new Vector3(0, 1, 0),
-                    Position = new Vector3(30, 10, 0),
+                    Position = _originPostion,
                     //ReportCallback = new ControllerHitReport()
                 };
 
@@ -79,7 +81,7 @@ namespace PhysX.CustomizedSamples.AddForceSample
                 if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.Kinematic;
 
                 _controller.UpDirection = new Vector3(0, 1, 0);
-                _controller.Position = new Vector3(30, 10, 0);
+                _controller.Position = _originPostion;
 
                 //if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.EnableCCD;
             }
@@ -89,9 +91,9 @@ namespace PhysX.CustomizedSamples.AddForceSample
         {
             if (_controller != null)
             {
-                _controller.UpDirection = new Vector3(0, 1, 0);
+                //_controller.UpDirection = new Vector3(0, 1, 0);
 
-                _controller.Actor?.AddForceAtPosition(new Vector3(0, 981, 0), _controller.Position, ForceMode.Force, true);
+                //_controller.Actor?.AddForceAtPosition(new Vector3(0, 981, 0), _controller.Position, ForceMode.Force, true);
             }
         }
 
@@ -104,37 +106,37 @@ namespace PhysX.CustomizedSamples.AddForceSample
             if (pressedKeys.Length <= 0) return;
 
             Vector3 forceVector;
-            float powerX = 100;
+            float powerX = 1000;
             //float powerY = 0;
-            float powerY = 0;
-            float powerZ = 100;
+            float powerY = 300;
+            float powerZ = 1000;
 
             Vector3 forceLocalPostion = new Vector3(0, 0, 0);
             if (pressedKeys.Contains(Key.A))
             {
                 forceVector = new Vector3(-powerX, powerY, 0);
+                forceLocalPostion = new Vector3(1, 0, 0);
             }
             else if (pressedKeys.Contains(Key.D))
             {
                 forceVector = new Vector3(powerX, powerY, 0);
+                forceLocalPostion = new Vector3(1, 0, 0);
             }
             else if (pressedKeys.Contains(Key.W))
             {
-                forceVector = new Vector3(0, powerY, powerZ);
-                forceLocalPostion = new Vector3(1, 0, 1);
+                forceVector = new Vector3(0, powerY, 0);
             }
             else if (pressedKeys.Contains(Key.S))
             {
-                forceVector = new Vector3(0, powerY, -powerZ);
-                forceLocalPostion = new Vector3(-1, 0, 1);
+                forceVector = new Vector3(0, -powerY, 0);
             }
             else
             {
                 forceVector = new Vector3(0, 0, 0);
             }
 
-            _ballActor?.AddLocalForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
-            _controller?.Actor.AddLocalForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
+            _ballActor?.AddForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
+            _controller?.Actor.AddForceAtLocalPosition(forceVector, forceLocalPostion, ForceMode.Impulse, true);
 
             if (forceVector.LengthSquared() != 0f )
             {
@@ -144,7 +146,7 @@ namespace PhysX.CustomizedSamples.AddForceSample
             if (pressedKeys.Contains(Key.Space))
             {
                 Vector3 jumpForceLocalPostion = new Vector3(0, 0, 0);
-                _controller?.Actor.AddLocalForceAtLocalPosition(new Vector3(0, 30, 0), jumpForceLocalPostion, ForceMode.Impulse, true);
+                _controller?.Actor.AddForceAtLocalPosition(new Vector3(0, 30, 0), jumpForceLocalPostion, ForceMode.Impulse, true);
             }
 
 
