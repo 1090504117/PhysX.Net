@@ -19,7 +19,7 @@ namespace PhysX.Samples.Engine
 		public event UpdateEventHandler OnUpdate;
 		public event EventHandler OnDraw;
 
-		private Action<SceneDesc> _sceneDescCallback;
+		private Action<SceneDesc>? _sceneDescCallback;
 
 		private Keyboard _keyboard;
 		private VisualizationEffect _visualizationEffect;
@@ -34,7 +34,7 @@ namespace PhysX.Samples.Engine
 		public Action<object, KeyEventArgs>? OnKeyDown;
 
 		// TODO: Clean up this class
-		public Engine(Action<SceneDesc> sceneDescCallback = null)
+		public Engine(Action<SceneDesc>? sceneDescCallback = null)
 		{
 			_sceneDescCallback = sceneDescCallback;
 
