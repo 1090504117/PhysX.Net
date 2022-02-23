@@ -78,6 +78,8 @@ namespace PhysX.CustomizedSamples.AddForceSample
             if (_controller != null)
             {
                 RigidDynamic? controllerActor = _controller?.Actor;
+                controllerActor.AngularVelocity = Vector3.Zero;
+                controllerActor.LinearVelocity = Vector3.Zero;
                 if (controllerActor != null) controllerActor.RigidBodyFlags = RigidBodyFlag.Kinematic;
 
                 _controller.UpDirection = new Vector3(0, 1, 0);

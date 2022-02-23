@@ -59,7 +59,11 @@ namespace PhysX.CustomizedSamples.CollideSample
         private void ResetActorPosition()
         {
             if (_capsuleBody != null)
+            { 
                 _capsuleBody.GlobalPosePosition = _startPostion;
+                _capsuleBody.LinearVelocity = Vector3.Zero;
+                _capsuleBody.AngularVelocity = Vector3.Zero;
+            }
         }
 
         protected override void LoadPhysics(Scene scene)
