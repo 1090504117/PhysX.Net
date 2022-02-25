@@ -117,12 +117,14 @@ namespace PhysX.CustomizedSamples.AddForceSample
             if (pressedKeys.Contains(Key.A))
             {
                 forceVector = new Vector3(-powerX, powerY, 0);
-                forceLocalPostion = new Vector3(1, 0, 0);
+                //forceLocalPostion = new Vector3(1, 0, 0);
+                forceLocalPostion = new Vector3(0, 0, 0);
             }
             else if (pressedKeys.Contains(Key.D))
             {
                 forceVector = new Vector3(powerX, powerY, 0);
-                forceLocalPostion = new Vector3(1, 0, 0);
+                //forceLocalPostion = new Vector3(1, 0, 0);
+                forceLocalPostion = new Vector3(0, 0, 0);
             }
             else if (pressedKeys.Contains(Key.W))
             {

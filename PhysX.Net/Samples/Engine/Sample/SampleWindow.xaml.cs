@@ -25,10 +25,10 @@ namespace PhysX.Samples
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			this.Width = (int)(SystemParameters.PrimaryScreenWidth * 0.85);
-			this.Height = (int)(SystemParameters.PrimaryScreenHeight * 0.85);
+			this.Width = (int)(SystemParameters.PrimaryScreenWidth * 0.5);
+			this.Height = (int)(SystemParameters.PrimaryScreenHeight * 0.6);
 
-			this.Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2);
+			this.Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2 + 450);
 			this.Top = (SystemParameters.PrimaryScreenHeight / 2) - (this.Height / 2);
 		}
 
