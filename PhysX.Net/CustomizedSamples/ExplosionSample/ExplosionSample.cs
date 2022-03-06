@@ -20,6 +20,8 @@ namespace PhysX.CustomizedSamples.ExplosionSample
 
         private Shape? _capsuleShape;
 
+        private bool _isTrrigerExplosion;
+
         private static float _halfHeight = 5;
         private Vector3 _startPostion = new Vector3(-15, 1, 0);
 
@@ -67,14 +69,6 @@ namespace PhysX.CustomizedSamples.ExplosionSample
                 _ballBody2.GlobalPosePosition = new Vector3(-2, 0, 0); ;
                 _ballBody2.LinearVelocity = Vector3.Zero;
                 _ballBody2.AngularVelocity = Vector3.Zero;
-
-                if (_largeBallBody != null)
-                {
-                    Scene.RemoveActor(_largeBallBody);
-                    _largeBallBody.Dispose();
-                    Debug.WriteLine($" _largeBallBody.Disposed = {_largeBallBody.Disposed}");
-                    _largeBallBody = null;
-                }
             }
         }
 
@@ -119,19 +113,50 @@ namespace PhysX.CustomizedSamples.ExplosionSample
 
             if (pressedKeys.Contains(Key.D))
             {
-                Material material = Scene.Physics.CreateMaterial(1f, 1f, 1f);
-                _largeBallBody = Scene.Physics.CreateRigidDynamic();
-                SphereGeometry geom3 = new SphereGeometry(radius: 2f);
-                RigidActorExt.CreateExclusiveShape(_largeBallBody, geom3, material, ShapeFlag.TriggerShape | ShapeFlag.Visualization);
-                _largeBallBody.Flags = ActorFlag.DisableGravity | ActorFlag.Visualization;
-                _largeBallBody.SetMassAndUpdateInertia(10);
-                _largeBallBody.GlobalPosePosition = new Vector3(0, 0, 0);
-                Scene.AddActor(_largeBallBody);
+                if (!_isTrrigerExplosion)
+                {
+                    _isTrrigerExplosion = true;
+                    SphereGeometry geom = new SphereGeometry(radius: 2f);
+                    Matrix4x4 pose = Matrix4x4.CreateTranslation(0,-1,0);
 
+                    OverlapHit[]? hits = null;
+                    bool status = Scene.Overlap
+                    (
+                        geometry: geom,
+                        pose: pose,
+                        maximumOverlaps: 100,
+                        hitCall: hit =>
+                        {
+                            hits = hit;
+
+                            return true;
+                        }
+                    );
+
+                    if (hits != null)
+                    {
+                        foreach (OverlapHit hit in hits)
+                        {
+                            RigidActor? actor = hit.Actor;
+                            if (actor != null &&actor.Type == ActorType.RigidDynamic)
+                            {
+                                RigidDynamic? dynamicActor = actor as RigidDynamic;
+                                if (dynamicActor != null)
+                                {
+                                    Vector3 forceVector = actor.GlobalPosePosition - pose.Translation;
+                                    forceVector = forceVector * 100;
+                                    dynamicActor.AddForceAtLocalPosition(forceVector, Vector3.Zero, ForceMode.Impulse, true);
+                                }    
+                            }
+
+                        }
+                    }
+                }
             }
             else if (pressedKeys.Contains(Key.R))
             {
                 ResetPhysics();
+                _isTrrigerExplosion = false;
             }
         }
          
