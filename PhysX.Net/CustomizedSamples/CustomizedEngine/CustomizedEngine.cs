@@ -11,6 +11,8 @@ namespace PhysX.CustomizedSamples.CustomizedEngine
 {
     public class CustomizedEngine : Engine
     {
+		public event UpdateEventHandler PreUpdate;
+
 		public static SimulationFilterShader? SimulationFilterShader { set; get; }
 
 		public Action? ResetPhysicsAction;
@@ -26,6 +28,11 @@ namespace PhysX.CustomizedSamples.CustomizedEngine
 		protected override void Update(TimeSpan elapsed, bool isNeedMoveCamera)
 		{
 			isNeedMoveCamera = false;
+			this.FrameTime = elapsed;
+
+			if (PreUpdate != null)
+				PreUpdate(elapsed);
+
 			base.Update(elapsed, isNeedMoveCamera);
 		}
 

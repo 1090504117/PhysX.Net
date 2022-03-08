@@ -249,7 +249,8 @@ namespace PhysX.Samples.Engine
 
 			var groundPlane = this.Scene.Physics.CreateRigidStatic();
 			groundPlane.Name = "Ground Plane";
-			groundPlane.GlobalPose = Matrix4x4.CreateFromAxisAngle(new System.Numerics.Vector3(0, 0, 1), (float)System.Math.PI / 2);
+            groundPlane.GlobalPose = Matrix4x4.CreateFromAxisAngle(new System.Numerics.Vector3(0, 0, 1), (float)System.Math.PI / 2);
+            //groundPlane.GlobalPose = Matrix4x4.CreateFromAxisAngle(new System.Numerics.Vector3(0, 0, 10), (float)0);
 
 			var planeGeom = new PlaneGeometry();
 
@@ -412,6 +413,6 @@ namespace PhysX.Samples.Engine
 
 		public Keyboard Keyboard => _keyboard;
 
-		public TimeSpan FrameTime { get; private set; }
+		public TimeSpan FrameTime { get; protected set; }
 	}
 }

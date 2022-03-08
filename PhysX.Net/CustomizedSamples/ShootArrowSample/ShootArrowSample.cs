@@ -84,7 +84,7 @@ namespace PhysX.CustomizedSamples.ShootArrowSample
             for(int i = 0; i < 4; i++)
             {
                 var ballBody = this.Scene.Physics.CreateRigidDynamic();
-                ballBody.Name = "Arrow";
+                ballBody.Name = "Ball";
                 SphereGeometry ballGeom = new SphereGeometry(radius: 1f);
                 Material ballMaterial = scene.Physics.CreateMaterial(1f, 1f, 1f);
                 Shape ballShape = RigidActorExt.CreateExclusiveShape(ballBody, ballGeom, ballMaterial, null);
@@ -92,6 +92,15 @@ namespace PhysX.CustomizedSamples.ShootArrowSample
                 ballBody.GlobalPosePosition = new Vector3((i-2) * 2, 1, 0);
                 this.Scene.AddActor(ballBody);
             }
+
+            var boxBody = this.Scene.Physics.CreateRigidStatic();
+            boxBody.Name = "Box";
+            BoxGeometry boxGeom = new BoxGeometry(1,2,3);
+            Material boxMaterial = scene.Physics.CreateMaterial(1f, 1f, 1f);
+            Shape boxShape = RigidActorExt.CreateExclusiveShape(boxBody, boxGeom, boxMaterial, null);
+            boxBody.GlobalPosePosition = new Vector3(10, 1, 0);
+            this.Scene.AddActor(boxBody);
+
 
             EventCallback callback = new EventCallback(this);
             scene.SetSimulationEventCallback(callback);
