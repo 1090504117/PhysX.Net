@@ -12,7 +12,7 @@ namespace PhysX.CustomizedSamples.ShootGameSample
     {
         private int _bumpIndex = 0;
 
-        private PhysXStage _physXStage;
+        private SceneStage _sceneStage;
 
         public ShootGameSample() : base(null, new CustomizedEngine.CustomizedEngine(null, new ShootGameSampleFilterShader()))
         {
@@ -74,47 +74,50 @@ namespace PhysX.CustomizedSamples.ShootGameSample
                 body.Name = "Sphere";
                 body.GlobalPosePosition = sphere.Pos;
                 body.GlobalPoseQuat = sphere.Quat;
-                body.UserData = (object)new UserData() { BodyType=BodyType.Bump, Id= };
                 var geom = new SphereGeometry(sphere.Radius);
                 RigidActorExt.CreateExclusiveShape(body, geom, material, null);
                 Scene.AddActor(body);
             }
         }
 
-        public void Shoot(Vector3 pos, Vector3 direction)
-        {
-            var material = Scene.Physics.CreateMaterial(0.1f, 0.1f, 0.1f);
-            var body = Scene.Physics.CreateRigidDynamic();
-            body.Name = "Sphere";
-            body.UserData = (object)new UserData() { BodyType = BodyType.Bump, Id = PhysXUtil.GenId()};
-            var geom = new SphereGeometry(1f);
-            RigidActorExt.CreateExclusiveShape(body, geom, material, null);
-            Scene.AddActor(body);
-            body?.AddForceAtLocalPosition(pos, Vector3.Zero, ForceMode.Impulse, true);
-        }
+
 
         protected void PreUpdate(TimeSpan elapsed)
         {
-            _physXStage = PhysXStage.PreUpdate;
+            PhysXUtil.SceneStage = SceneStage.PreUpdate;
 
 
-
-            _physXStage = PhysXStage.Update;
+            PhysXUtil.SceneStage = SceneStage.Update;
         }
 
 
         protected override void Update(TimeSpan elapsed)
         {
-            _physXStage = PhysXStage.LateUpdate;
+
+
+            foreach(var rigidActor in PhysXUtil.InLateUpdateNeedRemoveActorSet)
+            {
+                Debug.WriteLine($"rigidActor?.Scene?.RemoveActor {rigidActor?.GetHashCode()}");
+                rigidActor?.Scene?.RemoveActor(rigidActor);
+
+                Debug.WriteLine($"rigidActor?.Dispose() {rigidActor?.GetHashCode()}");
+                rigidActor?.Dispose();
+            }
+
+            PhysXUtil.InLateUpdateNeedRemoveActorSet.Clear();
         }
 
 
         protected override void ProcessKeyboard(Key[] pressedKeys)
         {
+            PhysXUtil.SceneStage = SceneStage.LateUpdate;
+
             if (pressedKeys.Length <= 0) return;
 
             if (pressedKeys.Contains(Key.D))
             {
+                PhysXUtil.PrintStage();
+                PhysXUtil.Shoot(Scene, new Vector3(-10, 10, 0), new Vector3(1, 0, 0));
             }
             else if (pressedKeys.Contains(Key.R))
             {

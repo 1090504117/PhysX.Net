@@ -13,7 +13,7 @@ namespace PhysX.CustomizedSamples.ShootGameSample
         Bump
     }
 
-    public enum PhysXStage
+    public enum SceneStage
     {
         PreUpdate,
         Update,
